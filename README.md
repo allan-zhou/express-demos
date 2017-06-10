@@ -18,5 +18,6 @@ app.METHOD(path, [callback...], callback)
 
 # demos
 - demo01: hello world
-- demo02: 路由
+- demo02: 路由 route
 - demo03: express应用生成器
+- demo04: 中间件 midlleware

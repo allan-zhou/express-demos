@@ -24,9 +24,14 @@ var app = express();
 
 // (x)? 其中，x为任意单个或多个字符，匹配其0次或者1次
 //匹配 /abe 或者 /abcde
-app.get('/ab(cd)?e',(req, res) => {
-    res.send('ab(cd)?e');
-});
+// app.get('/ab(cd)?e',(req, res) => {
+//     res.send('ab(cd)?e');
+// });
+
+//匹配 /user/123 或 /user/abc
+app.get('/user/:id',(req, res) => {
+    res.send('user/:id');
+})
 
 
 app.listen(8080);
