@@ -16,14 +16,14 @@ app.METHOD(PATH, HANDLER)
 有一种特殊路由方法：**app.all()**，它并非派生自 HTTP 方法。该方法用于在所有请求方法的路径中装入中间件函数。
 
 
-## 路由路径：demo03
+## 路由路径：demo03 
 路由路径与请求方法相结合，用于定义可以在其中提出请求的端点。路由路径可以是**字符串(strings)**、**字符串模式(string pattern)**或**正则表达式(RegExp)**。
 
 > Express 使用 [path-to-regexp](https://www.npmjs.com/package/path-to-regexp) 来匹配路由路径  
 
 > 查询字符串不是路由路径的一部分。  
 
-### 字符串模式（string pattern）
+### 字符串模式（string pattern） : demo04
 
 | pattern | 描述 |
 |---|---|
@@ -32,6 +32,13 @@ app.METHOD(PATH, HANDLER)
 | * | 匹配任意单个或多个字符 |
 | (x)? | 其中，x为任意单个或多个字符，匹配其0次或者1次 |
 
-## 路由处理程序：demo04
+> 字符 ?、+、* 和 () 是其正则表达式同应项的子集。
 
-## express.Router：demo05
+## 路由处理程序：demo05
+路由处理程序的形式可以是一个函数、一组函数或者两者的结合。  
+回调函数，以类似于中间件的行为方式来处理请求。唯一例外是这些回调函数可能调用 next('route') 来绕过剩余的路由回调。
+
+## 响应方法：demo06
+如果没有从路由处理程序调用其中任何方法，客户机请求将保持挂起(pending)状态。
+
+## express.Router：demo07

@@ -1,13 +1,16 @@
 let express = require('express');
 let router = express.Router();
 
-router.get('/blog',(req, res, next) => {
-   res.send('Get from /blog'); 
+router.get('/', (req, res) => {
+    res.send('Get from /blog ')
+})
+
+router.get('/types',(req, res) => {
+   res.send('Get from /blog/types'); 
 });
 
-router.get('/blog/list',(req, res, next) => {
-   res.send('Get from /blog/list'); 
+router.get('/details',(req, res) => {
+   res.send('Get from /blog/details'); 
 });
-
 
 module.exports = router;
