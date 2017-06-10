@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
-var router = express.Router();
+
+app.use(express.static('assets'));
+app.use('/assets', express.static('assets'));
 
 app.listen(8080);
