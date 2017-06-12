@@ -22,3 +22,4 @@ app.METHOD(path, [callback...], callback)
 - demo03: express应用生成器
 - demo04: 中间件 midlleware
 - demo05: 模板引擎
+- demo06: 数据库集成
