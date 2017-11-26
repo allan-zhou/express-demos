@@ -10,8 +10,10 @@ const PORT = process.PORT || 3000;
 const sessionSecret = 'my secret';
 app.use(session({
   secret: sessionSecret,
+  resave: false,
+  saveUninitialized: false,
   cookie:{
-    maxAge:60000, //一分钟
+    maxAge:6000, //一分钟
   }
 }));
 app.use(cookieParser());
@@ -43,7 +45,6 @@ app.get('/', (req, res, next) => {
   content += '<br > cookieSignature.sign(): ' + signed; 
   content += '<br > encodeURIComponent(signed): ' + encodeURIComponent(signed);
   content +='<br > cookieSignature.unsign(): ' + cookieSignature.unsign(connect_sid.slice(2), sessionSecret);
-  // content += '<br >' + cookieSignature.unsign()
 
   res.send(content);
 })
