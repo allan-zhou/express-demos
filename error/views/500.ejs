@@ -1,0 +1,12 @@
+<% include error_header %>
+
+<h1><%= error.message %></h1>
+<h2><%= error.status %></h2>
+
+<% if (settings['DEVP']) { %>
+    <pre><%= error.stack %></pre>
+  <% } else { %>
+    <p> 请联系系统管理员 ^_^ </p>
+  <% } %>
+
+<% include footer %>
