@@ -1,47 +1,35 @@
-var request = require('request');
-var querystring = require('querystring');
+var http = require('http');
+var async = require('async');
+var cipher = require('./cipher');
 
-var API_KEY = "_L0NETQMp1516111227";
 
-var payloadData = {
-    payload: {
-        chaincode_id: "transfer",
-        args: ["query", "d"]
-    }
-}
+var start = Date.now();
+async.waterfall([
+    func1,
+    func2,
+    func3,
+], function (err, result) {
+    console.log(Buffer.from(result).toString());
 
-var postData = {
-    mode: 1,
-    input: JSON.stringify(payloadData)
-};
-
-request.post("http://localhost:3000/users", {
-    har:{
-        method: "POST",
-        headers: [
-            {
-                name: "Content-Type",
-                value: "application/x-www-form-urlencoded",
-            },
-            {
-                name: "Enrollment-Id",
-                value: API_KEY
-            }
-        ],
-        postData: {
-            mimeType: "application/x-www-form-urlencoded",
-            params: [
-                {
-                  name: 'foo',
-                  value: 'bar'
-                },
-                {
-                  name: 'hello',
-                  value: 'world'
-                }
-              ]
+    var interval = Date.now() - start;
+    console.log("total interval:" + interval);
+    
+});
+function func1(callback) {
+    var payloadData = {
+        payload: {
+            chaincode_id: "transfer",
+            args: ["query", "d"]
         }
     }
-}, (error, response, body) => {
-    console.log(body);
-})
+    // Encipher("192.168.1.217", payloadData, callback)
+    cipher.Encipher("192.168.1.217", payloadData, callback)
+    
+}
+function func2(arg1, callback) {
+    Query("192.168.1.185", API_KEY, arg1, callback)
+}
+function func3(arg1, callback) {
+    // Decipher('192.168.1.217', arg1, callback)
+    cipher.Decipher('192.168.1.217', arg1, callback)
+}
