@@ -1,14 +1,10 @@
 var http = require('http');
 var querystring = require('querystring');
-var url = require('url')
 
 var API_KEY = "_L0NETQMp1516111227";
 
 function Encipher(hostname, data) {
-    var postData = {
-        mode: 1,
-        input: JSON.stringify(data)
-    };
+    var postData = { mode: 1, input: JSON.stringify(data)};
 
     var options = {
         hostname: hostname,
@@ -22,12 +18,16 @@ function Encipher(hostname, data) {
 
     var req = http.request(options, function (res) { 
         var responseData = "";
+
+        var start = Date.now();
         res.on('data', function (chun) {
-            console.log(chun.toString());
+            // console.log(chun.toString());
             responseData = chun;
         });
+
         res.on('end', function () {
-            console.log('end Encipher.********');
+            var interval  = Date.now() - start;
+            console.log('end Encipher:' + interval);
 
             Query("192.168.1.185", API_KEY ,responseData)
         });
@@ -47,18 +47,22 @@ function Query(hostname, apikey, data) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Enrollment-Id': apikey,
+            // 'Enrollment-Id': apikey,
             'API-Key': apikey,
         }
     }
     
     var req = http.request(options, function (res) {
         var responseData = "";
+        var start = Date.now();
+
         res.on('data', function (chun) {
             responseData = chun;
         });
         res.on('end', function () {
-            console.log('end Query.********');
+            var interval  = Date.now() - start;
+            console.log('end Query:' + interval);
+
             Decipher('192.168.1.217',responseData)
         });
     });
@@ -75,8 +79,6 @@ function Decipher(hostname, data) {
         input: decodeURIComponent(data)
     };
 
-    console.log(decodeURIComponent(data));
-
     var options = {
         hostname: hostname,
         port: 8080,
@@ -88,11 +90,14 @@ function Decipher(hostname, data) {
     }
 
     var req = http.request(options, function (res) { 
+        var start = Date.now();
+
         res.on('data', function (chun) {
             console.log(chun.toString());
         });
         res.on('end', function () {
-            console.log('end Decipher.********');
+            var interval  = Date.now() - start;
+            console.log('end Decipher:' + interval);
         });
     });
     req.on('error', function (err) {
@@ -111,4 +116,3 @@ var payloadData = {
 }
 
 Encipher("192.168.1.217", payloadData)
-
