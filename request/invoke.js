@@ -2,8 +2,6 @@ var http = require('http');
 var async = require('async');
 var common = require('./common');
 
-var API_KEY = "_L0NETQMp1516111227";
-
 function func1(callback) {
     var payloadData = {
         payload: {
@@ -11,17 +9,17 @@ function func1(callback) {
             args: ["set", "e", "98"]
         }
     }
-    common.Encipher("192.168.1.217", payloadData, callback)
+    common.Encipher(payloadData, callback)
 }
 function func2(arg1, callback) {
-    common.Invoke("192.168.1.185", API_KEY, arg1, callback)
+    common.Invoke(arg1, callback)
 }
 function func3(arg1, callback) {
-    common.Decipher('192.168.1.217', arg1, callback)
+    common.Decipher(arg1, callback)
 }
 
-var start = Date.now();
 var times = 200;
+var start = Date.now();
 for (let index = 1; index <= times; index++) {
     console.log(index);
     async.waterfall([
@@ -29,6 +27,7 @@ for (let index = 1; index <= times; index++) {
         func2,
         func3,
     ], function (err, result) {
+        console.log(index + " : " +Buffer.from(result).toString());
         if (index == times && result) {
             var interval = Date.now() - start;
             console.log("total interval:" + interval);

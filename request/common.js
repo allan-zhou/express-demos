@@ -1,20 +1,38 @@
 var http = require('http');
 var querystring = require('querystring');
+var config = require('./config');
 
-//加密
-function Encipher(hostname, data, callback) {
-    var postData = { mode: 1, input: JSON.stringify(data) };
-
-    var options = {
-        hostname: hostname,
-        port: 8080,
+// Encipher/Decipher request options
+function getCipherRequestOptions(){
+    return {
+        hostname: config.cipher_server_ip,
+        port: config.cipher_server_port,
         path: '/',
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         }
     }
+}
 
+// Query/Invoke to tomago request options
+// type: query | invoke
+function getTomagoRequestOptions(type){
+    return {
+        hostname: config.tomago_server_ip,
+        port: config.tomago_server_port,
+        path: '/tomago/v2/blockchain/' + type,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            // 'Enrollment-Id': apikey,
+            'API-Key': config.API_KEY
+        }
+    }
+}
+
+// request
+function doRequest(options, postData, callback){
     var req = http.request(options, function (res) {
         var responseData = "";
         res.on('data', function (chun) {
@@ -27,102 +45,44 @@ function Encipher(hostname, data, callback) {
     req.on('error', function (err) {
         console.error(err);
     });
-    req.write(querystring.stringify(postData));
+    if(postData){
+        req.write(postData);
+    }
     req.end();
 }
 
-//解密
-function Decipher(hostname, data, callback) {
+
+/* 
+ * Expose Method 
+ */
+
+// Encipher
+function Encipher(data, callback) {
+    var postData = { mode: 1, input: JSON.stringify(data) };
+
+    doRequest(getCipherRequestOptions(), querystring.stringify(postData), callback)
+}
+
+// Decipher
+function Decipher(data, callback) {
     var postData = {
         mode: 2,
         input: decodeURIComponent(data)
     };
 
-    var options = {
-        hostname: hostname,
-        port: 8080,
-        path: '/',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    }
-
-    var req = http.request(options, function (res) {
-        var responseData = "";
-        res.on('data', function (chun) {
-            responseData = chun;
-        });
-        res.on('end', function () {
-            callback(null, responseData)
-        });
-    });
-    req.on('error', function (err) {
-        console.log("err");
-    });
-    req.write(querystring.stringify(postData));
-    req.end();
+    doRequest(getCipherRequestOptions(), querystring.stringify(postData), callback)
 }
 
-// query
-function Query(hostname, apikey, data, callback) {
-    var options = {
-        hostname: hostname,
-        port: 9143,
-        path: '/tomago/v2/blockchain/query',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            // 'Enrollment-Id': apikey,
-            'API-Key': apikey,
-        }
-    }
-
-    var req = http.request(options, function (res) {
-        var responseData = "";
-        res.on('data', function (chun) {
-            responseData = chun;
-        });
-        res.on('end', function () {
-            callback(null, responseData);
-        });
-    });
-    req.on('error', function (err) {
-        console.error(err);
-    });
-    req.write(data);
-    req.end();
+// Query
+function Query(data, callback) {
+    doRequest(getTomagoRequestOptions('query'), data, callback)
 }
 
-// invoke
-function Invoke(hostname, apikey, data, callback) {
-    var options = {
-        hostname: hostname,
-        port: 9143,
-        path: '/tomago/v2/blockchain/invoke',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Enrollment-Id': apikey,
-            'API-Key': apikey,
-        }
-    }
-    
-    var req = http.request(options, function (res) {
-        var responseData = "";
-        res.on('data', function (chun) {
-            responseData = chun;
-        });
-        res.on('end', function () {
-            callback(null, responseData);
-        });
-    });
-    req.on('error', function (err) {
-        console.error(err);
-    });
-    req.write(data);
-    req.end();
+// Invoke
+function Invoke(data, callback) {
+    doRequest(getTomagoRequestOptions('invoke'), data, callback)
 }
+
 
 exports.Encipher = Encipher;
 exports.Decipher = Decipher;
